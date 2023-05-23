@@ -3,6 +3,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import MessageBubble from '../../../components/MessageBubble';
 import SendMessageField from '../../../components/SendMessageField';
 import HttpHelper from '../../../helpers/HttpHelper';
+import StorageHelper from '../../../helpers/StorageHelper';
 import RenderMessages from './renderMessages/RenderMessages';
 
 const makeStyles = (theme) => ({
@@ -38,79 +39,42 @@ const ChatContainer = () => {
         };
     }, [usedHeight]);
 
-    // const [messages, setMessages] = useState([]);
-    // const [lastAnswer, setLastAnswer] = useState('');
-    // const [awaitAnswersCount, setAwaitAnswersCount] = useState(0);
-    // const onSend = useCallback((value) => {
-    //     const newMessages = [...messages];
-    //     newMessages.push({ fromUser: true, message: value });
-    //     setMessages(newMessages);
-    //     const newAwaitAnswersCount = awaitAnswersCount + 1;
-    //     setAwaitAnswersCount(newAwaitAnswersCount);
-    //     console.log(value, messages, newMessages);
-    //
-    //     HttpHelper.post('talk', { lastAnswer, question: value }).then((response) => {
-    //         let message = response.answer;
-    //         if(!message) {
-    //             message = 'Não entendi, poderia me explicar um pouco melhor?';
-    //             setLastAnswer('');
-    //         } else {
-    //             setLastAnswer(message);
-    //         }
-    //         newMessages.push({ fromUser: false, message });
-    //         setMessages(newMessages);
-    //         setAwaitAnswersCount(newAwaitAnswersCount - 1);
-    //     }).catch((err) => {
-    //         console.log(err);
-    //         const message = 'Estou recebendo muitas mensagens, por favor espere um instante';
-    //         newMessages.push({ fromUser: false, message });
-    //         setMessages(newMessages);
-    //         setLastAnswer('');
-    //         setAwaitAnswersCount(newAwaitAnswersCount - 1);
-    //     });
-    // }, [awaitAnswersCount, lastAnswer, messages]);
+    const [messages, setMessages] = useState(StorageHelper.getArray('messages'));
+    const [awaitAnswersCount, setAwaitAnswersCount] = useState(StorageHelper.getNumber('awaitAnswersCount'));
 
-    const [messages, setMessages] = useState(JSON.parse(sessionStorage.getItem('messages') || '[]'));
-    const [awaitAnswersCount, setAwaitAnswersCount] = useState(Number(sessionStorage.getItem('awaitAnswersCount') || '0'));
+    const pushMessage = useCallback((message, incrementOrDecrementCount) => {
+        StorageHelper.pushOnArray('messages',message);
+        if(incrementOrDecrementCount) {
+            StorageHelper.incrementNumber('awaitAnswersCount');
+        } else {
+            StorageHelper.decrementNumber('awaitAnswersCount');
+        }
+
+        setMessages(StorageHelper.getArray('messages'));
+        setAwaitAnswersCount(StorageHelper.getNumber('awaitAnswersCount'));
+    }, []);
+
     const onSend = useCallback((value) => {
-        const messages = JSON.parse(sessionStorage.getItem('messages') || '[]');
-        messages.push({ fromUser: true, message: value });
-        sessionStorage.setItem('messages', JSON.stringify(messages));
-
-        const awaitAnswersCount = Number(sessionStorage.getItem('awaitAnswersCount') || '0');
-        sessionStorage.setItem('awaitAnswersCount', `${awaitAnswersCount+1}`);
-
-        const lastAnswer = sessionStorage.getItem('lastAnswer') || '';
-
+        pushMessage({ fromUser: true, message: value }, true);
+        const lastAnswer = StorageHelper.getString('lastAnswer');
         let message = '';
 
+        let newLastAnswer = '';
         HttpHelper.post('talk', { lastAnswer, question: value }).then((response) => {
             message = response.answer;
             if(!message) {
                 message = 'Não entendi, poderia me explicar um pouco melhor?';
-                sessionStorage.setItem('lastAnswer', '');
             } else {
-                sessionStorage.setItem('lastAnswer', message);
+                newLastAnswer = message;
             }
         }).catch((err) => {
             console.log(err);
-            message = 'Estou recebendo muitas mensagens, por favor espere um instante';
-            sessionStorage.setItem('lastAnswer', '');
+            message = 'Estou recebendo muitas mensagens, por favor espere um instante e tente novamente';
         }).finally(() => {
-            const messages = JSON.parse(sessionStorage.getItem('messages') || '[]');
-            messages.push({ fromUser: false, message });
-            sessionStorage.setItem('messages', JSON.stringify(messages));
-
-            const awaitAnswersCount = Number(sessionStorage.getItem('awaitAnswersCount') || '0');
-            sessionStorage.setItem('awaitAnswersCount', `${awaitAnswersCount-1}`);
-
-            setMessages(JSON.parse(sessionStorage.getItem('messages') || '[]'));
-            setAwaitAnswersCount(Number(sessionStorage.getItem('awaitAnswersCount') || '0'));
+            StorageHelper.setString('lastAnswer', newLastAnswer);
+            pushMessage({ fromUser: false, message: message }, false);
         });
-
-        setMessages(JSON.parse(sessionStorage.getItem('messages') || '[]'));
-        setAwaitAnswersCount(Number(sessionStorage.getItem('awaitAnswersCount') || '0'));
-    }, []);
+    }, [pushMessage]);
 
     return (
         <>

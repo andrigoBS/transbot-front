@@ -10,8 +10,6 @@ const put = (path, data) => {
     return _genericFetch('PUT', path, data);
 };
 
-const _isSuccess = (status) => status >= 200 && status <= 299;
-
 const _genericFetch = (method, path, data, auth, accept = 'application/json') => {
     const init = {
         headers: {
