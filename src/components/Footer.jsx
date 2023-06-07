@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as LinkRouter } from 'react-router-dom';
 import { Grid, IconButton, Typography, useTheme } from '@mui/material';
-import LogoIcon from '../icons/LogoIcon';
+import LogoIcon from '../icons/logoIcon/LogoIcon';
 
 const useStyles = (theme) => ({
     container: {

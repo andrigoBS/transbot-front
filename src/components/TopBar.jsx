@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Box, IconButton, Toolbar, useMediaQuery, useTheme } from '@mui/material';
-import LogoIcon from '../icons/LogoIcon';
+import LogoIcon from '../icons/logoIcon/LogoIcon';
 
 const TopBar = ({ children }) => {
     const theme = useTheme();
