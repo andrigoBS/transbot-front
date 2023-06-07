@@ -63,23 +63,27 @@ const ChatContainer = () => {
             newLastAnswer = answer;
         }
         StorageHelper.setString('lastAnswer', newLastAnswer);
+        setLastAnswer(newLastAnswer);
         pushMessage({ fromUser: false, message: answer });
     }, [pushMessage]);
 
     const onError = React.useCallback(() => {
         const message = 'Estou recebendo muitas mensagens, por favor espere um instante e tente novamente';
         StorageHelper.setString('lastAnswer', '');
+        setLastAnswer('');
         pushMessage({ fromUser: false, message: message });
     }, [pushMessage]);
 
     const onSend = React.useCallback((question) => {
+        const lastAnswer = StorageHelper.getString('lastAnswer');
         pushMessage({ fromUser: true, message: question });
         WebSocketHelper.send({ lastAnswer, question });
-    }, [lastAnswer, pushMessage]);
+    }, [pushMessage]);
 
     const onConnect = useCallback(() => {
         const message = `Oi, tudo bem ? Eu sou ${import.meta.env.REACT_APP_PROJECT_NAME}, como posso te ajudar hoje?`;
         StorageHelper.setString('lastAnswer', message);
+        setLastAnswer(message);
         pushMessage({ fromUser: false, message: message });
         setIsLoading(false);
     }, []);
