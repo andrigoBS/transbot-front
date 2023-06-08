@@ -5,7 +5,9 @@
 **EN-US:** Implementation of a chatbot front-end for the transsexualization process using recurrent neural networks and natural language processing written in portuguese.
 
 ## Main Dependences
-- react: ^17.0.0
+- react 18
+- material ui 5
+- vite 4
 
 ## Author
 
