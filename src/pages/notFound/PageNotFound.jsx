@@ -57,7 +57,7 @@ const PageNotFound = () => {
                     Página não encontrada
                 </Typography>
                 <Typography variant="p" color={'text'}>
-                    Seja muito bem-vindo, infelizmente não encontramos a página solicitada,
+                    Infelizmente não encontramos a página solicitada,
                     por favor verifique se o link que você está acessando está correto,
                     caso tenha chegado aqui pela propria plataforma por favor informar ao suporte.
                 </Typography>

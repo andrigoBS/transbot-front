@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as LinkRouter } from 'react-router-dom';
-import { Grid, IconButton, Typography, useTheme } from '@mui/material';
+import { Grid, IconButton, Link, Typography, useTheme } from '@mui/material';
 import LogoIcon from '../icons/logoIcon/LogoIcon';
 
 const useStyles = (theme) => ({
@@ -33,7 +33,7 @@ const Footer = () => {
             </Grid>
             <Grid item xs={12} sx={styles.toCenter}>
                 <Typography variant="p" color={'white'} sx={styles.padding} >
-                    2023 - Univali - Equipe Transbot
+                    2023 - Univali - <Link href={'https://github.com/andrigoBS'} target={'_blank'} color={'#fff'}> Equipe</Link>
                 </Typography>
             </Grid>
         </Grid>

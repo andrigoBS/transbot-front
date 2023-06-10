@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import MessageBubble from '../../../../components/MessageBubble';
+import MessageBubble from '../../../components/MessageBubble';
 
 const makeStyles = (theme) => ({
     chatMessageLeft: {
