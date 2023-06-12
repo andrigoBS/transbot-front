@@ -59,7 +59,7 @@ const Chat = () => {
     const onReceive = React.useCallback(({ answer }) => {
         let newLastAnswer = '';
         if(!answer) {
-            answer = 'Não entendi, poderia me explicar um pouco melhor?';
+            answer = 'Não entendi, poderia me explicar de outra maneira?';
         } else {
             newLastAnswer = answer;
         }
@@ -82,9 +82,9 @@ const Chat = () => {
     }, [pushMessage]);
 
     const onConnect = useCallback(() => {
-        const message = `Oi, tudo bem ? Eu sou ${import.meta.env.REACT_APP_PROJECT_NAME}, como posso te ajudar hoje?`;
-        StorageHelper.setString('lastAnswer', message);
-        setLastAnswer(message);
+        const message = `Oi, tudo bem ? Eu sou ${import.meta.env.REACT_APP_PROJECT_NAME}, sobre o que você deseja se informar?`;
+        StorageHelper.setString('lastAnswer', 'Oi, tudo bem ?');
+        setLastAnswer('Oi, tudo bem ?');
         pushMessage({ fromUser: false, message: message });
         setIsLoading(false);
     }, []);
